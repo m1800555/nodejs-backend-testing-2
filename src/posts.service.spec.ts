@@ -1,4 +1,4 @@
-import { PostsService } from './posts.service';
+import { Post, PostsService } from './posts.service';
 
 describe('PostsService', () => {
   let postsService: PostsService;
@@ -15,18 +15,31 @@ describe('PostsService', () => {
       {text: 'Post 4'},
     ];
 
+    let testPosts: Post[] = [];
+
     beforeEach(() => {
-      posts.forEach((post) => postsService.create(post));
+      testPosts = posts.map((post) => postsService.create(post));
     });
 
     it('should return all posts if called without options', () => {
-      // реализуйте тест-кейс
+      const foundPosts = postsService.findMany();
+      expect(foundPosts).toEqual(testPosts);
     });
 
     it('should return correct posts for skip and limit options', () => {
-      // реализуйте тест-кейс
+      const limitPosts = testPosts.slice(2, 4);
+      const foundPosts = postsService.findMany({ skip: 2, limit: 2 });
+      expect(foundPosts).toEqual(limitPosts);
     });
 
-    // реализуйте недостающие тест-кейсы
+    it('should return empty posts if skip more than array length', () => {
+      const foundPosts = postsService.findMany({ skip: 100, limit: 2 });
+      expect(foundPosts).toEqual([]);
+    });
+
+    it('should return empty posts if limit 0', () => {
+      const foundPosts = postsService.findMany({ skip: 0, limit: 0 });
+      expect(foundPosts).toEqual([]);
+    });
   });
 });
